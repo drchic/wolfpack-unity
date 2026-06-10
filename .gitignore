@@ -1,0 +1,28 @@
+# Backend
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/*.iml
+backend/.idea/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+npm-debug.log*
