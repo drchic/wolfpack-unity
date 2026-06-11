@@ -93,5 +93,14 @@ Admins bypass all deadline restrictions.
 - ✅ Task 3: Exception Handling
 - ✅ Task 4: JWT Utilities & Auth Infrastructure
 - ✅ Task 5: Security Config, User Repository & Admin Seeder
-- ⏳ Task 6: Auth Endpoints (Register, Login, Google OAuth2)
-- ⏳ Task 7+: Remaining backend and frontend
+- ✅ Task 6: Auth Endpoints (Register, Login, Google OAuth2)
+- ✅ Task 7: Cancellation Policy (Pure Logic)
+- ✅ Task 8: Reservation Repository, Service & Controller
+- ✅ Task 9: Email Service (Full Implementation)
+- ✅ Task 10: Admin Endpoints
+- ✅ Task 11: Frontend Scaffold
+- ✅ Task 12: Auth Pages
+- ✅ Task 13: Slot Grid & Booking
+- ✅ Task 14: My Reservations Page
+- ✅ Task 15: Admin Panel
+- ⏳ Task 16: Final Verification (run tests + manual smoke test)
