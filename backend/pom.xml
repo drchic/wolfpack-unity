@@ -43,9 +43,9 @@
         <configuration>
           <jdbc>
             <driver>org.postgresql.Driver</driver>
-            <url>jdbc:postgresql://localhost:5433/wolfpackunity</url>
-            <user>gym</user>
-            <password>gym</password>
+            <url>jdbc:postgresql://localhost:5432/wolfpackunity</url>
+            <user>postgres</user>
+            <password>postgres</password>
           </jdbc>
           <generator>
             <database>
