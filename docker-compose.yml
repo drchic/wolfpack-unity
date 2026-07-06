@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/wolfpackunity
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@wolfpackunity.com}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASS: ${MAIL_PASS:-}
+    networks:
+      - claude-net
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8091:80"
+    depends_on:
+      - backend
+    networks:
+      - claude-net
+
+networks:
+  claude-net:
+    external: true
