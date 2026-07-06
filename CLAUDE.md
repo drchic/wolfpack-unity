@@ -16,17 +16,15 @@
 ## Infrastructure
 
 ### PostgreSQL Database
-- **Container**: `wolfpackunity-db`
-- **Port**: `5433` (local host)
-- **Internal Port**: `5432`
-- **User**: `gym`
-- **Password**: `gym`
+- **Port**: `5432`
+- **User**: `postgres`
+- **Password**: `postgres`
 - **Database**: `wolfpackunity`
 
-**Start/Stop**:
+**Start/Stop** (via systemctl):
 ```bash
-docker start wolfpackunity-db
-docker stop wolfpackunity-db
+sudo systemctl start postgresql
+sudo systemctl stop postgresql
 ```
 
 ### Backend (Spring Boot)
@@ -41,17 +39,17 @@ JWT_SECRET=dev-secret-min-32-chars-required-!!
 
 **Start**:
 ```bash
-JWT_SECRET="..." mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8081" -Dspring-boot.run.profiles=dev
+JWT_SECRET="..." mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 ### Frontend (React + Vite)
-- **Port**: `5173`
+- **Port**: `5174`
 - **Proxy**: Routes `/api`, `/login`, `/oauth2` to `http://localhost:8081`
 
 ## Development Workflow
 
 ### Initial Setup
-1. Start PostgreSQL: `docker start wolfpackunity-db`
+1. Start PostgreSQL: `sudo systemctl start postgresql`
 2. Run Flyway migrations: Start Spring Boot once to create schema
 3. Generate jOOQ classes: `mvn jooq-codegen:generate`
 4. Compile backend: `mvn compile`
@@ -83,7 +81,7 @@ Admins bypass all deadline restrictions.
 
 - **jOOQ Codegen**: Runs manually only. Does NOT auto-execute during build. Requires running database.
 - **Generated Sources**: In `target/generated-sources/jooq/` — Maven compiles via `build-helper-maven-plugin`
-- **Ports**: PostgreSQL uses 5433 (not 5432, which is reserved for production work)
+- **Ports**: PostgreSQL on 5432, Backend on 8081, Frontend on 5174
 - **Dev Mode**: OAuth2 credentials are stubbed in `application-dev.properties`
 
 ## Implementation Status
