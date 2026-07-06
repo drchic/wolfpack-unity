@@ -14,6 +14,7 @@ services:
       MAIL_USER: ${MAIL_USER:-}
       MAIL_PASS: ${MAIL_PASS:-}
     networks:
+      - app-net
       - claude-net
 
   frontend:
@@ -23,8 +24,9 @@ services:
     depends_on:
       - backend
     networks:
-      - claude-net
+      - app-net
 
 networks:
+  app-net:
   claude-net:
     external: true
