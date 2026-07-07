@@ -11,5 +11,10 @@ export default defineConfig({
       '/login': 'http://localhost:8081',
       '/oauth2': 'http://localhost:8081',
     }
-  }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+  },
 })
