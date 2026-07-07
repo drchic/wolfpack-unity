@@ -6,7 +6,9 @@ import com.wolfpackunity.gym.jooq.enums.PostType;
 import com.wolfpackunity.gym.post.dto.PostRequest;
 import com.wolfpackunity.gym.post.dto.PostView;
 import com.wolfpackunity.gym.post.dto.PostsPage;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +22,14 @@ public class PostService {
     public PostService(PostRepository repo) { this.repo = repo; }
 
     public PostsPage list(String type, int page, int size) {
-        PostType postType = type != null ? PostType.valueOf(type) : null;
+        PostType postType = null;
+        if (type != null) {
+            try {
+                postType = PostType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown post type: " + type);
+            }
+        }
         List<PostView> content = repo.findAll(postType, page, size);
         long total = repo.count(postType);
         return new PostsPage(content, total, page, size);
@@ -32,7 +41,12 @@ public class PostService {
     }
 
     public PostView create(PostRequest req, UUID authorId) {
-        PostType type = PostType.valueOf(req.type());
+        PostType type;
+        try {
+            type = PostType.valueOf(req.type());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown post type: " + req.type());
+        }
         String slug = req.slug() != null && !req.slug().isBlank()
                 ? req.slug()
                 : uniqueSlug(req.title());
@@ -40,17 +54,27 @@ public class PostService {
     }
 
     public PostView update(UUID id, PostRequest req) {
-        if (!repo.existsById(id)) throw new GymException(ErrorCode.POST_NOT_FOUND);
-        PostType type = PostType.valueOf(req.type());
-        String slug = req.slug() != null && !req.slug().isBlank()
+        // Issue 1 + Issue 3: fetch existing post first — provides atomic 404 and gives us the
+        // current slug so a PUT that omits the slug field does not regenerate it.
+        PostView existing = repo.findById(id)
+                .orElseThrow(() -> new GymException(ErrorCode.POST_NOT_FOUND));
+        PostType type;
+        try {
+            type = PostType.valueOf(req.type());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown post type: " + req.type());
+        }
+        // Preserve the existing slug when the caller did not explicitly supply one.
+        String slug = (req.slug() != null && !req.slug().isBlank())
                 ? req.slug()
-                : uniqueSlug(req.title());
+                : existing.slug();
         return repo.update(id, type, req.title(), slug, req.body(), req.youtubeUrl());
     }
 
     public void delete(UUID id) {
-        if (!repo.existsById(id)) throw new GymException(ErrorCode.POST_NOT_FOUND);
-        repo.delete(id);
+        // Issue 3: remove TOCTOU pre-check; rely on rows-affected count instead.
+        int rows = repo.delete(id);
+        if (rows == 0) throw new GymException(ErrorCode.POST_NOT_FOUND);
     }
 
     private String uniqueSlug(String title) {

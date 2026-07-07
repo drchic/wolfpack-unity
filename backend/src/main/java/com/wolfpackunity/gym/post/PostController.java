@@ -3,6 +3,7 @@ package com.wolfpackunity.gym.post;
 import com.wolfpackunity.gym.post.dto.PostRequest;
 import com.wolfpackunity.gym.post.dto.PostView;
 import com.wolfpackunity.gym.post.dto.PostsPage;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +33,12 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostView create(@RequestBody PostRequest req, Authentication auth) {
+    public PostView create(@RequestBody @Valid PostRequest req, Authentication auth) {
         return service.create(req, UUID.fromString(auth.getName()));
     }
 
     @PutMapping("/{id}")
-    public PostView update(@PathVariable UUID id, @RequestBody PostRequest req) {
+    public PostView update(@PathVariable UUID id, @RequestBody @Valid PostRequest req) {
         return service.update(id, req);
     }
 

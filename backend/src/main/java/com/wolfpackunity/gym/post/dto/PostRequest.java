@@ -1,8 +1,10 @@
 package com.wolfpackunity.gym.post.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record PostRequest(
-        String type,
-        String title,
+        @NotBlank String type,
+        @NotBlank String title,
         String slug,
         String body,
         String youtubeUrl

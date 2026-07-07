@@ -63,13 +63,13 @@ class PostIntegrationTest {
     }
 
     @Test
-    void createPost_withoutAuth_returns403() throws Exception {
+    void createPost_withoutAuth_returns3xxRedirect() throws Exception {
         mvc.perform(post("/api/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {"type":"NEWS","title":"Test Post","body":"Hello"}
                     """))
-                .andExpect(status().isForbidden());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test

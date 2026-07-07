@@ -92,12 +92,27 @@ public class PostRepository {
         return findBySlug(slug).orElseThrow();
     }
 
-    public void delete(UUID id) {
-        dsl.deleteFrom(Tables.POSTS).where(Tables.POSTS.ID.eq(id)).execute();
+    public Optional<PostView> findById(UUID id) {
+        return dsl.select(
+                        Tables.POSTS.ID, Tables.POSTS.TYPE, Tables.POSTS.TITLE, Tables.POSTS.SLUG,
+                        Tables.POSTS.BODY, Tables.POSTS.YOUTUBE_URL, Tables.POSTS.PUBLISHED_AT,
+                        Tables.USERS.NAME)
+                .from(Tables.POSTS)
+                .join(Tables.USERS).on(Tables.POSTS.AUTHOR_ID.eq(Tables.USERS.ID))
+                .where(Tables.POSTS.ID.eq(id))
+                .fetchOptional(r -> new PostView(
+                        r.get(Tables.POSTS.ID),
+                        r.get(Tables.POSTS.TYPE).getLiteral(),
+                        r.get(Tables.POSTS.TITLE),
+                        r.get(Tables.POSTS.SLUG),
+                        r.get(Tables.POSTS.BODY),
+                        r.get(Tables.POSTS.YOUTUBE_URL),
+                        r.get(Tables.USERS.NAME),
+                        r.get(Tables.POSTS.PUBLISHED_AT)));
     }
 
-    public boolean existsById(UUID id) {
-        return dsl.fetchExists(Tables.POSTS, Tables.POSTS.ID.eq(id));
+    public int delete(UUID id) {
+        return dsl.deleteFrom(Tables.POSTS).where(Tables.POSTS.ID.eq(id)).execute();
     }
 
     public boolean existsBySlug(String slug) {
