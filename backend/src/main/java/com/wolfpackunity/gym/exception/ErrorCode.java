@@ -10,6 +10,7 @@ public enum ErrorCode {
     PAST_SLOT(HttpStatus.BAD_REQUEST, "Cannot book a slot that has already started."),
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Reservation not found."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found."),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not found."),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "An account with this email already exists.");
 
     public final HttpStatus status;
