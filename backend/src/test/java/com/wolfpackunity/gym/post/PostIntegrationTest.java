@@ -44,11 +44,13 @@ class PostIntegrationTest {
     @MockBean com.wolfpackunity.gym.email.EmailService emailService;
 
     private String adminToken;
+    private String userToken;
 
     @BeforeEach
     void setup() {
         dsl.deleteFrom(Tables.POSTS).execute();
         dsl.deleteFrom(Tables.USERS).execute();
+        userToken = authService.register(new RegisterRequest("User", "user@example.com", "pw")).token();
         authService.register(new RegisterRequest("Admin", "admin@example.com", "pw"));
         dsl.update(Tables.USERS).set(Tables.USERS.ROLE, UserRole.ADMIN)
                 .where(Tables.USERS.EMAIL.eq("admin@example.com")).execute();
@@ -112,5 +114,30 @@ class PostIntegrationTest {
         mvc.perform(delete("/api/posts/" + id)
                 .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void writeEndpoints_withUserRole_return403() throws Exception {
+        String fakeId = java.util.UUID.randomUUID().toString();
+
+        mvc.perform(post("/api/posts")
+                .header("Authorization", "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"type":"NEWS","title":"Should Fail","body":"no"}
+                    """))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(put("/api/posts/" + fakeId)
+                .header("Authorization", "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"type":"NEWS","title":"Should Fail","body":"no"}
+                    """))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(delete("/api/posts/" + fakeId)
+                .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden());
     }
 }

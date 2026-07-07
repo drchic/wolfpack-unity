@@ -23,7 +23,8 @@ public class PostController {
             @RequestParam(required = false) String type,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        return service.list(type, page, size);
+        int effectiveSize = Math.min(size, 100);
+        return service.list(type, page, effectiveSize);
     }
 
     @GetMapping("/{slug}")

@@ -26,28 +26,13 @@ export interface PostRequest {
   youtubeUrl?: string
 }
 
-// Spring Page response shape from the backend
-interface SpringPage<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  number: number
-  size: number
-}
-
 export async function getPosts(params?: {
   type?: string
   page?: number
   size?: number
 }): Promise<PostsPage> {
-  const res = await client.get<SpringPage<PostView>>('/posts', { params })
-  const data = res.data
-  return {
-    content: data.content,
-    total: data.totalElements,
-    page: data.number,
-    size: data.size,
-  }
+  const res = await client.get<PostsPage>('/posts', { params })
+  return res.data
 }
 
 export async function getPost(slug: string): Promise<PostView> {

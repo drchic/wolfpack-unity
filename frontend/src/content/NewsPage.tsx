@@ -7,13 +7,23 @@ export function NewsPage() {
   const [posts, setPosts] = useState<PostView[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
-  const [total, setTotal] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
   const size = 20
 
   useEffect(() => {
     setLoading(true)
-    getPosts({ type: 'NEWS', page, size })
-      .then(p => { setPosts(p.content); setTotal(p.total) })
+    Promise.all([
+      getPosts({ type: 'NEWS', page, size }),
+      getPosts({ type: 'ANNOUNCEMENT', page, size }),
+    ])
+      .then(([newsPage, announcementPage]) => {
+        const merged = [...newsPage.content, ...announcementPage.content]
+          .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+        setPosts(merged)
+        const newsHasMore = (page + 1) * size < newsPage.total
+        const announcementHasMore = (page + 1) * size < announcementPage.total
+        setHasMore(newsHasMore || announcementHasMore)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [page])
@@ -28,7 +38,7 @@ export function NewsPage() {
         {!loading && posts.length === 0 && <p>No news yet.</p>}
         <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
           {page > 0 && <button onClick={() => setPage(p => p - 1)}>← Previous</button>}
-          {(page + 1) * size < total && <button onClick={() => setPage(p => p + 1)}>Next →</button>}
+          {hasMore && <button onClick={() => setPage(p => p + 1)}>Next →</button>}
         </div>
       </div>
     </>
