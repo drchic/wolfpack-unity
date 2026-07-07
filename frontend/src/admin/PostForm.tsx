@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { PostRequest, PostView } from '../api/posts'
 
 interface Props {
@@ -11,8 +11,17 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
   const [type, setType] = useState<'NEWS' | 'BLOG' | 'VLOG' | 'ANNOUNCEMENT'>(initial?.type ?? 'NEWS')
   const [title, setTitle] = useState(initial?.title ?? '')
   const [slug, setSlug] = useState(initial?.slug ?? '')
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
   const [body, setBody] = useState(initial?.body ?? '')
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? '')
+
+  const deriveSlug = (titleText: string): string => {
+    return titleText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  }
+
+  useEffect(() => {
+    setSlugManuallyEdited(false)
+  }, [initial])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,7 +35,13 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
     <form onSubmit={handleSubmit}>
       <label style={labelStyle}>
         Type
-        <select aria-label="Type" value={type} onChange={e => setType(e.target.value as 'NEWS' | 'BLOG' | 'VLOG' | 'ANNOUNCEMENT')} style={fieldStyle}>
+        <select aria-label="Type" value={type} onChange={e => {
+          const newType = e.target.value as 'NEWS' | 'BLOG' | 'VLOG' | 'ANNOUNCEMENT'
+          setType(newType)
+          if (newType !== 'VLOG') {
+            setYoutubeUrl('')
+          }
+        }} style={fieldStyle}>
           <option value="NEWS">NEWS</option>
           <option value="BLOG">BLOG</option>
           <option value="VLOG">VLOG</option>
@@ -35,11 +50,20 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
       </label>
       <label style={labelStyle}>
         Title
-        <input aria-label="Title" value={title} onChange={e => setTitle(e.target.value)} required style={fieldStyle} />
+        <input aria-label="Title" value={title} onChange={e => {
+          const newTitle = e.target.value
+          setTitle(newTitle)
+          if (!slugManuallyEdited) {
+            setSlug(deriveSlug(newTitle))
+          }
+        }} required style={fieldStyle} />
       </label>
       <label style={labelStyle}>
-        Slug (leave blank to auto-generate)
-        <input aria-label="Slug" value={slug} onChange={e => setSlug(e.target.value)} style={fieldStyle} />
+        Slug (auto-filled from title, editable)
+        <input aria-label="Slug" value={slug} onChange={e => {
+          setSlugManuallyEdited(true)
+          setSlug(e.target.value)
+        }} style={fieldStyle} />
       </label>
       <label style={labelStyle}>
         Body

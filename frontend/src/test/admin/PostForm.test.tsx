@@ -18,7 +18,7 @@ test('YouTube URL field is shown when type is VLOG', () => {
 test('submit calls onSave with form values', () => {
   render(<PostForm onSave={noop} onCancel={noop} />)
   fireEvent.change(screen.getByLabelText(/type/i), { target: { value: 'NEWS' } })
-  fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'My Post' } })
+  fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'My Post' } })
   fireEvent.click(screen.getByRole('button', { name: /save/i }))
-  expect(noop).toHaveBeenCalledWith(expect.objectContaining({ type: 'NEWS', title: 'My Post' }))
+  expect(noop).toHaveBeenCalledWith(expect.objectContaining({ type: 'NEWS', title: 'My Post', slug: 'my-post' }))
 })
