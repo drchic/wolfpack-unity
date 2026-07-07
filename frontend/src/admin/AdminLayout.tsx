@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { UsersTable } from './UsersTable'
 import { ReservationsTable } from './ReservationsTable'
 import { StatsView } from './StatsView'
+import { PostsTable } from './PostsTable'
 
 export function AdminLayout() {
   const [activeTab, setActiveTab] = useState('users')
@@ -36,12 +37,16 @@ export function AdminLayout() {
         <button onClick={() => setActiveTab('stats')} style={tabStyle('stats')}>
           Stats
         </button>
+        <button onClick={() => setActiveTab('content')} style={tabStyle('content')}>
+          Content
+        </button>
       </div>
 
       <div style={{ padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '0 4px 4px 4px' }}>
         {activeTab === 'users' && <UsersTable />}
         {activeTab === 'reservations' && <ReservationsTable />}
         {activeTab === 'stats' && <StatsView />}
+        {activeTab === 'content' && <PostsTable />}
       </div>
     </div>
   )
