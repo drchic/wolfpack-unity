@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { TopNav } from '../components/TopNav'
 import { getPost, type PostView } from '../api/posts'
+import { Badge, Spinner, ErrorMessage } from '../components/ui'
 
 function extractYoutubeId(url: string): string | null {
   const match = url.match(/[?&]v=([^&]+)/) ?? url.match(/youtu\.be\/([^?]+)/)
@@ -21,8 +22,11 @@ export function PostPage() {
   if (error) return (
     <>
       <TopNav />
-      <div style={{ maxWidth: 800, margin: '40px auto', padding: '0 24px' }}>
-        <p>Post not found. <Link to="/">Back to home</Link></p>
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <ErrorMessage message="Post not found." />
+        <Link to="/" className="mt-4 inline-block text-sm font-medium text-accent hover:text-accent-hi">
+          Back to home
+        </Link>
       </div>
     </>
   )
@@ -30,37 +34,40 @@ export function PostPage() {
   if (!post) return (
     <>
       <TopNav />
-      <div style={{ maxWidth: 800, margin: '40px auto', padding: '0 24px' }}>
-        <p>Loading...</p>
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <Spinner />
       </div>
     </>
   )
 
   const date = new Date(post.publishedAt).toLocaleDateString()
+  const videoId = post.type === 'VLOG' && post.youtubeUrl ? extractYoutubeId(post.youtubeUrl) : null
 
   return (
     <>
       <TopNav />
-      <div style={{ maxWidth: 800, margin: '40px auto', padding: '0 24px' }}>
-        <p style={{ fontSize: '0.85rem', color: '#666' }}>
-          <Link to="/">Home</Link> · {post.type}
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <p className="text-xs text-ink-muted">
+          <Link to="/" className="hover:text-ink">Home</Link> · {post.type}
         </p>
-        <h1>{post.title}</h1>
-        <p style={{ color: '#666', fontSize: '0.9rem' }}>{post.authorName} · {date}</p>
-        {post.type === 'VLOG' && (() => {
-          const videoId = post.youtubeUrl ? extractYoutubeId(post.youtubeUrl) : null
-          return videoId ? (
-            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', marginBottom: '24px' }}>
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}`}
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                allowFullScreen
-                title={post.title}
-              />
-            </div>
-          ) : null
-        })()}
-        {post.body && <p style={{ lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{post.body}</p>}
+        <div className="mt-3">
+          <Badge type={post.type} />
+        </div>
+        <h1 className="mt-3 font-display text-4xl font-black uppercase tracking-tight text-ink">{post.title}</h1>
+        <p className="mt-2 text-sm text-ink-muted">{post.authorName} · {date}</p>
+        {videoId && (
+          <div className="relative mt-6 aspect-video overflow-hidden rounded-xl">
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}`}
+              className="absolute inset-0 h-full w-full"
+              allowFullScreen
+              title={post.title}
+            />
+          </div>
+        )}
+        {post.body && (
+          <p className="mt-6 whitespace-pre-wrap leading-relaxed text-ink-muted">{post.body}</p>
+        )}
       </div>
     </>
   )
