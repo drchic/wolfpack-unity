@@ -2,7 +2,7 @@ export type PostType = 'NEWS' | 'BLOG' | 'VLOG' | 'ANNOUNCEMENT'
 
 const styles: Record<PostType, string> = {
   ANNOUNCEMENT: 'bg-accent/15 text-accent',
-  NEWS: 'bg-[#6ea8ff]/15 text-[#6ea8ff]',
+  NEWS: 'bg-info/15 text-info',
   BLOG: 'bg-success/15 text-success',
   VLOG: 'bg-danger/15 text-danger',
 }
