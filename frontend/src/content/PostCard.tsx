@@ -1,30 +1,55 @@
 import { Link } from 'react-router-dom'
 import type { PostView } from '../api/posts'
+import { Badge, Card } from '../components/ui'
 
 interface Props { post: PostView }
 
+function extractYoutubeId(url: string): string | null {
+  const match = url.match(/[?&]v=([^&]+)/) ?? url.match(/youtu\.be\/([^?]+)/)
+  return match ? match[1] : null
+}
+
 export function PostCard({ post }: Props) {
   const date = new Date(post.publishedAt).toLocaleDateString()
+  const thumbnailId = post.type === 'VLOG' && post.youtubeUrl ? extractYoutubeId(post.youtubeUrl) : null
+
   return (
-    <div style={{ borderBottom: '1px solid #eee', padding: '16px 0' }}>
-      <Link to={`/posts/${post.slug}`} style={{ fontSize: '1.1rem', fontWeight: 600, textDecoration: 'none', color: '#1a1a1a' }}>
-        {post.title}
-      </Link>
-      <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px' }}>
-        <span>{post.authorName}</span><span> · </span><span>{date}</span>
-      </div>
-      {post.type === 'VLOG' && post.youtubeUrl && (
-        <div style={{ marginTop: '8px' }}>
-          <a href={post.youtubeUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.9rem' }}>
-            Watch on YouTube
-          </a>
+    <Card className="overflow-hidden">
+      {thumbnailId && (
+        <img
+          src={`https://img.youtube.com/vi/${thumbnailId}/hqdefault.jpg`}
+          alt=""
+          className="aspect-video w-full object-cover"
+        />
+      )}
+      <div className="p-4">
+        <Badge type={post.type} />
+        <div className="mt-2">
+          <Link to={`/posts/${post.slug}`} className="font-display text-lg font-black text-ink hover:text-accent">
+            {post.title}
+          </Link>
         </div>
-      )}
-      {post.type !== 'VLOG' && post.body && (
-        <p style={{ marginTop: '8px', color: '#333', fontSize: '0.95rem' }}>
-          {post.body.slice(0, 160)}{post.body.length > 160 ? '…' : ''}
-        </p>
-      )}
-    </div>
+        <div className="mt-1 text-xs text-ink-muted">
+          <span>{post.authorName}</span><span> · </span><span>{date}</span>
+        </div>
+        {post.type === 'VLOG' && post.youtubeUrl && (
+          <div className="mt-2">
+            <a
+              href={post.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-accent hover:text-accent-hi"
+            >
+              Watch on YouTube
+            </a>
+          </div>
+        )}
+        {post.type !== 'VLOG' && post.body && (
+          <p className="mt-2 text-sm text-ink-muted">
+            {post.body.slice(0, 160)}{post.body.length > 160 ? '…' : ''}
+          </p>
+        )}
+      </div>
+    </Card>
   )
 }
