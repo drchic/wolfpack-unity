@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { book } from '../api/slots'
+import { Button, Card, ErrorMessage } from '../components/ui'
 
 interface BookingModalProps {
   date: string
@@ -30,52 +31,22 @@ export function BookingModal({ date, hour, spotNumber, onClose, onSuccess }: Boo
   const timeStr = String(hour).padStart(2, '0') + ':00'
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        padding: '30px',
-        borderRadius: '8px',
-        maxWidth: '400px',
-        width: '90%'
-      }}>
-        <h2>Confirm Booking</h2>
-        <p>Date: {date}</p>
-        <p>Time: {timeStr}</p>
-        <p>Spot: #{spotNumber}</p>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 px-4">
+      <Card className="w-full max-w-sm p-6">
+        <h2 className="font-display text-xl font-black uppercase tracking-tight text-ink">Confirm Booking</h2>
+        <p className="mt-3 text-sm text-ink-muted">Date: {date}</p>
+        <p className="text-sm text-ink-muted">Time: {timeStr}</p>
+        <p className="text-sm text-ink-muted">Spot: #{spotNumber}</p>
 
-        {error && <div style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
+        {error && <div className="mt-3"><ErrorMessage message={error} /></div>}
 
-        <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-          <button onClick={onClose} style={{ flex: 1, padding: '10px' }}>
-            Cancel
-          </button>
-          <button
-            onClick={handleConfirm}
-            disabled={loading}
-            style={{
-              flex: 1,
-              padding: '10px',
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
-          >
+        <div className="mt-6 flex gap-3">
+          <Button variant="ghost" onClick={onClose} className="flex-1">Cancel</Button>
+          <Button variant="primary" onClick={handleConfirm} disabled={loading} className="flex-1">
             {loading ? 'Booking...' : 'Confirm'}
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }
