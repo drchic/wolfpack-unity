@@ -1,42 +1,48 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { Button } from './ui'
+
+const navLinkClass = (active: boolean) =>
+  `text-sm font-medium transition-colors ${active ? 'text-accent' : 'text-ink-muted hover:text-ink'}`
 
 export function TopNav() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = () => {
     logout()
     navigate('/login')
   }
 
-  const linkStyle = { color: '#1a1a1a', textDecoration: 'none', padding: '0 12px' }
-
   return (
-    <nav style={{
-      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '12px 24px', borderBottom: '1px solid #ddd', backgroundColor: '#fff'
-    }}>
-      <div>
-        <Link to="/" style={{ ...linkStyle, fontWeight: 700, fontSize: '1.1rem' }}>Wolfpack Unity</Link>
-        <Link to="/news" style={linkStyle}>News</Link>
-        <Link to="/blog" style={linkStyle}>Blog</Link>
-        <Link to="/vlog" style={linkStyle}>Vlog</Link>
-      </div>
-      <div>
-        {user ? (
-          <>
-            <Link to="/book" style={linkStyle}>Book a slot</Link>
-            <Link to="/my-reservations" style={linkStyle}>My Reservations</Link>
-            <button onClick={handleLogout} style={{ marginLeft: '12px', padding: '6px 14px', cursor: 'pointer' }}>
-              Logout
-            </button>
-          </>
-        ) : (
-          <Link to="/login" style={{ ...linkStyle, padding: '6px 14px', border: '1px solid #ccc', borderRadius: '4px' }}>
-            Login
+    <nav className="sticky top-0 z-10 border-b border-edge bg-surface/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-6">
+          <Link to="/" className="font-display text-sm font-black uppercase tracking-wide text-ink">
+            🐺 Wolfpack
           </Link>
-        )}
+          <Link to="/news" className={navLinkClass(location.pathname === '/news')}>News</Link>
+          <Link to="/blog" className={navLinkClass(location.pathname === '/blog')}>Blog</Link>
+          <Link to="/vlog" className={navLinkClass(location.pathname === '/vlog')}>Vlog</Link>
+        </div>
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <Link to="/book">
+                <Button variant="primary" className="px-4 py-2">Book a slot</Button>
+              </Link>
+              <Link to="/my-reservations" className={navLinkClass(location.pathname === '/my-reservations')}>
+                My Reservations
+              </Link>
+              <Button variant="ghost" onClick={handleLogout}>Logout</Button>
+            </>
+          ) : (
+            <Link to="/login">
+              <Button variant="primary" className="px-4 py-2">Login</Button>
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   )
