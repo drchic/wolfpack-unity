@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { Button } from './ui'
+import { Button, buttonClasses } from './ui'
 
 const navLinkClass = (active: boolean) =>
   `text-sm font-medium transition-colors ${active ? 'text-accent' : 'text-ink-muted hover:text-ink'}`
@@ -29,8 +29,8 @@ export function TopNav() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Link to="/book">
-                <Button variant="primary" className="px-4 py-2">Book a slot</Button>
+              <Link to="/book" className={buttonClasses('primary', 'px-4 py-2')}>
+                Book a slot
               </Link>
               <Link to="/my-reservations" className={navLinkClass(location.pathname === '/my-reservations')}>
                 My Reservations
@@ -38,8 +38,8 @@ export function TopNav() {
               <Button variant="ghost" onClick={handleLogout}>Logout</Button>
             </>
           ) : (
-            <Link to="/login">
-              <Button variant="primary" className="px-4 py-2">Login</Button>
+            <Link to="/login" className={buttonClasses('primary', 'px-4 py-2')}>
+              Login
             </Link>
           )}
         </div>

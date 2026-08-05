@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { TopNav } from '../components/TopNav'
 import { PostCard } from './PostCard'
 import { getPosts, type PostView } from '../api/posts'
-import { Button, Spinner, ErrorMessage, EmptyState } from '../components/ui'
+import { buttonClasses, Spinner, ErrorMessage, EmptyState } from '../components/ui'
 
 export function HomePage() {
   const [announcements, setAnnouncements] = useState<PostView[]>([])
@@ -42,8 +42,8 @@ export function HomePage() {
             Stronger<br />Every Day.
           </h1>
           <p className="mt-4 text-sm text-ink-muted">24/7 gym · hourly slots · book in seconds</p>
-          <Link to="/book" className="mt-6 inline-block">
-            <Button variant="primary" className="px-6 py-3 text-base">Book your slot →</Button>
+          <Link to="/book" className={buttonClasses('primary', 'mt-6 inline-block px-6 py-3 text-base')}>
+            Book your slot →
           </Link>
         </div>
       </section>

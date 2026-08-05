@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getMyReservations, cancelReservation, type ReservationView } from '../api/slots'
 import { TopNav } from '../components/TopNav'
-import { PageHeader, Button, ErrorMessage, EmptyState, Spinner } from '../components/ui'
+import { PageHeader, Button, buttonClasses, ErrorMessage, EmptyState, Spinner } from '../components/ui'
 
 export function MyReservationsPage() {
   const [reservations, setReservations] = useState<ReservationView[]>([])
@@ -47,8 +47,8 @@ export function MyReservationsPage() {
       <div className="mx-auto max-w-4xl px-4 py-10">
         <div className="mb-6 flex items-center justify-between">
           <PageHeader title="My Reservations" />
-          <Link to="/book">
-            <Button variant="ghost">Book a Spot</Button>
+          <Link to="/book" className={buttonClasses('ghost')}>
+            Book a Spot
           </Link>
         </div>
 

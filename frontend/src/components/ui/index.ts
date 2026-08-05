@@ -1,4 +1,4 @@
-export { Button } from './Button'
+export { Button, buttonClasses } from './Button'
 export { Card } from './Card'
 export { Badge, type PostType } from './Badge'
 export { Label, Input, Textarea, Select } from './Input'

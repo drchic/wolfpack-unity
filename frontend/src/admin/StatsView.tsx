@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getStats, type StatsView as StatsViewType } from '../api/admin'
-import { Spinner, ErrorMessage } from '../components/ui'
+import { Card, Spinner, ErrorMessage } from '../components/ui'
 
 export function StatsView() {
   const [stats, setStats] = useState<StatsViewType | null>(null)
@@ -33,7 +33,7 @@ export function StatsView() {
       {stats && (
         <>
           <div className="grid gap-6 sm:grid-cols-2">
-            <div className="rounded-xl border border-edge bg-surface p-4">
+            <Card className="p-4">
               <h3 className="mb-3 font-display text-sm font-black uppercase tracking-wide text-ink">Daily Occupancy (Last 30 days)</h3>
               <table className="w-full border-collapse text-sm">
                 <thead>
@@ -51,9 +51,9 @@ export function StatsView() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </Card>
 
-            <div className="rounded-xl border border-edge bg-surface p-4">
+            <Card className="p-4">
               <h3 className="mb-3 font-display text-sm font-black uppercase tracking-wide text-ink">Busiest Hours (Top 10)</h3>
               <table className="w-full border-collapse text-sm">
                 <thead>
@@ -71,10 +71,10 @@ export function StatsView() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </Card>
           </div>
 
-          <div className="mt-6 rounded-xl border border-edge bg-surface p-4">
+          <Card className="mt-6 p-4">
             <h3 className="mb-3 font-display text-sm font-black uppercase tracking-wide text-ink">Top Users</h3>
             <table className="w-full border-collapse text-sm">
               <thead>
@@ -94,7 +94,7 @@ export function StatsView() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </Card>
         </>
       )}
     </div>

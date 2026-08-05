@@ -4,7 +4,7 @@ import { getSlots, type SlotView } from '../api/slots'
 import { SlotRow } from './SlotRow'
 import { BookingModal } from './BookingModal'
 import { TopNav } from '../components/TopNav'
-import { PageHeader, Input, Button, Spinner, ErrorMessage, EmptyState } from '../components/ui'
+import { PageHeader, Input, buttonClasses, Spinner, ErrorMessage, EmptyState } from '../components/ui'
 
 export function SlotGridPage() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
@@ -40,8 +40,8 @@ export function SlotGridPage() {
       <div className="mx-auto max-w-4xl px-4 py-10">
         <div className="mb-6 flex items-center justify-between">
           <PageHeader title="Book a Spot" />
-          <Link to="/my-reservations">
-            <Button variant="ghost">My Reservations</Button>
+          <Link to="/my-reservations" className={buttonClasses('ghost')}>
+            My Reservations
           </Link>
         </div>
 

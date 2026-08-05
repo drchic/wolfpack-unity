@@ -5,7 +5,7 @@ import { ReservationsTable } from './ReservationsTable'
 import { StatsView } from './StatsView'
 import { PostsTable } from './PostsTable'
 import { TopNav } from '../components/TopNav'
-import { Button, PageHeader } from '../components/ui'
+import { buttonClasses, PageHeader } from '../components/ui'
 
 const tabs = [
   { key: 'users', label: 'Users' },
@@ -23,8 +23,8 @@ export function AdminLayout() {
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="mb-6 flex items-center justify-between">
           <PageHeader title="Admin Panel" />
-          <Link to="/">
-            <Button variant="ghost">Back to App</Button>
+          <Link to="/" className={buttonClasses('ghost')}>
+            Back to App
           </Link>
         </div>
 

@@ -32,8 +32,9 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
   return (
     <form onSubmit={handleSubmit} className="max-w-xl space-y-4">
       <div>
-        <Label>Type</Label>
+        <Label htmlFor="post-type">Type</Label>
         <Select
+          id="post-type"
           aria-label="Type"
           value={type}
           onChange={e => {
@@ -51,8 +52,9 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
         </Select>
       </div>
       <div>
-        <Label>Title</Label>
+        <Label htmlFor="post-title">Title</Label>
         <Input
+          id="post-title"
           aria-label="Title"
           value={title}
           onChange={e => {
@@ -66,8 +68,9 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
         />
       </div>
       <div>
-        <Label>Slug (auto-filled from title, editable)</Label>
+        <Label htmlFor="post-slug">Slug (auto-filled from title, editable)</Label>
         <Input
+          id="post-slug"
           aria-label="Slug"
           value={slug}
           onChange={e => {
@@ -77,13 +80,13 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
         />
       </div>
       <div>
-        <Label>Body</Label>
-        <Textarea aria-label="Body" value={body} onChange={e => setBody(e.target.value)} rows={6} />
+        <Label htmlFor="post-body">Body</Label>
+        <Textarea id="post-body" aria-label="Body" value={body} onChange={e => setBody(e.target.value)} rows={6} />
       </div>
       {type === 'VLOG' && (
         <div>
-          <Label>YouTube URL</Label>
-          <Input aria-label="YouTube URL" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} />
+          <Label htmlFor="post-youtube">YouTube URL</Label>
+          <Input id="post-youtube" aria-label="YouTube URL" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} />
         </div>
       )}
       <div className="flex gap-3 pt-2">
