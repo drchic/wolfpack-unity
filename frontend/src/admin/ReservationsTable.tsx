@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getReservations, cancelAdminReservation } from '../api/admin'
 import type { ReservationView } from '../api/slots'
+import { Button, Input, Spinner, ErrorMessage } from '../components/ui'
 
 export function ReservationsTable() {
   const [reservations, setReservations] = useState<ReservationView[]>([])
@@ -40,64 +41,59 @@ export function ReservationsTable() {
 
   const timeStr = (hour: number) => String(hour).padStart(2, '0') + ':00'
 
-  if (loading) return <div>Loading reservations...</div>
+  if (loading) return <Spinner />
 
   return (
     <div>
-      <div style={{ marginBottom: '20px' }}>
-        <label>Filter by Date: </label>
-        <input
+      <div className="mb-4 flex items-center gap-3">
+        <label className="text-sm font-medium text-ink-muted" htmlFor="reservations-filter-date">Filter by Date</label>
+        <Input
+          id="reservations-filter-date"
           type="date"
           value={filterDate}
           onChange={(e) => setFilterDate(e.target.value)}
-          style={{ padding: '8px' }}
+          className="w-auto"
         />
         {filterDate && (
-          <button onClick={() => setFilterDate('')} style={{ marginLeft: '10px', padding: '8px' }}>
-            Clear
-          </button>
+          <Button variant="ghost" onClick={() => setFilterDate('')} className="px-3 py-1.5 text-xs">Clear</Button>
         )}
       </div>
 
-      {error && <div style={{ color: 'red', marginBottom: '15px', padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px' }}>{error}</div>}
+      {error && <div className="mb-4"><ErrorMessage message={error} /></div>}
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-        <thead>
-          <tr style={{ borderBottom: '2px solid #ddd' }}>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Date</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Time</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Spot</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Status</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reservations.map((res) => (
-            <tr key={res.id} style={{ borderBottom: '1px solid #eee' }}>
-              <td style={{ padding: '10px' }}>{res.date}</td>
-              <td style={{ padding: '10px' }}>{timeStr(res.hour)}</td>
-              <td style={{ padding: '10px' }}>#{res.spotNumber}</td>
-              <td style={{ padding: '10px' }}>{res.status}</td>
-              <td style={{ padding: '10px' }}>
-                <button
-                  onClick={() => handleCancel(res.id)}
-                  disabled={cancelling === res.id}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: cancelling === res.id ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  {cancelling === res.id ? 'Cancelling...' : 'Cancel'}
-                </button>
-              </td>
+      <div className="overflow-x-auto rounded-xl border border-edge">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-edge text-left text-xs uppercase tracking-wide text-ink-muted">
+              <th className="px-4 py-3">Date</th>
+              <th className="px-4 py-3">Time</th>
+              <th className="px-4 py-3">Spot</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {reservations.map((res) => (
+              <tr key={res.id} className="border-b border-edge last:border-0 hover:bg-surface-2">
+                <td className="px-4 py-3 text-ink">{res.date}</td>
+                <td className="px-4 py-3 text-ink">{timeStr(res.hour)}</td>
+                <td className="px-4 py-3 text-ink">#{res.spotNumber}</td>
+                <td className="px-4 py-3 text-ink">{res.status}</td>
+                <td className="px-4 py-3">
+                  <Button
+                    variant="danger"
+                    onClick={() => handleCancel(res.id)}
+                    disabled={cancelling === res.id}
+                    className="px-3 py-1.5 text-xs"
+                  >
+                    {cancelling === res.id ? 'Cancelling...' : 'Cancel'}
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

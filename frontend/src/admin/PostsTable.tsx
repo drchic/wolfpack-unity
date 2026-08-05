@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getPosts, createPost, updatePost, deletePost, type PostView } from '../api/posts'
 import { PostForm } from './PostForm'
+import { Button, Badge, Spinner, ErrorMessage } from '../components/ui'
 
 export function PostsTable() {
   const [posts, setPosts] = useState<PostView[]>([])
@@ -60,37 +61,39 @@ export function PostsTable() {
 
   return (
     <div>
-      {error && <div style={{ color: 'red', marginBottom: '12px' }}>{error}</div>}
-      <button onClick={() => setCreating(true)} style={{ marginBottom: '16px', padding: '8px 16px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-        New Post
-      </button>
-      {loading && <p>Loading...</p>}
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ borderBottom: '2px solid #ddd' }}>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Title</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Type</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Published</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {posts.map(post => (
-            <tr key={post.id} style={{ borderBottom: '1px solid #eee' }}>
-              <td style={{ padding: '10px' }}>{post.title}</td>
-              <td style={{ padding: '10px' }}>{post.type}</td>
-              <td style={{ padding: '10px' }}>{new Date(post.publishedAt).toLocaleDateString()}</td>
-              <td style={{ padding: '10px', display: 'flex', gap: '8px' }}>
-                <button onClick={() => setEditing(post)} style={{ padding: '4px 10px', cursor: 'pointer' }}>Edit</button>
-                <button onClick={() => handleDelete(post.id)} style={{ padding: '4px 10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Delete</button>
-              </td>
+      {error && <div className="mb-4"><ErrorMessage message={error} /></div>}
+      <Button onClick={() => setCreating(true)} className="mb-4">New Post</Button>
+      {loading && <Spinner />}
+      <div className="overflow-x-auto rounded-xl border border-edge">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-edge text-left text-xs uppercase tracking-wide text-ink-muted">
+              <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Type</th>
+              <th className="px-4 py-3">Published</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
-          ))}
-          {!loading && posts.length === 0 && (
-            <tr><td colSpan={4} style={{ padding: '20px', textAlign: 'center', color: '#666' }}>No posts yet.</td></tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {posts.map(post => (
+              <tr key={post.id} className="border-b border-edge last:border-0 hover:bg-surface-2">
+                <td className="px-4 py-3 text-ink">{post.title}</td>
+                <td className="px-4 py-3"><Badge type={post.type} /></td>
+                <td className="px-4 py-3 text-ink">{new Date(post.publishedAt).toLocaleDateString()}</td>
+                <td className="px-4 py-3">
+                  <div className="flex gap-2">
+                    <Button variant="ghost" onClick={() => setEditing(post)} className="px-3 py-1.5 text-xs">Edit</Button>
+                    <Button variant="danger" onClick={() => handleDelete(post.id)} className="px-3 py-1.5 text-xs">Delete</Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {!loading && posts.length === 0 && (
+              <tr><td colSpan={4} className="px-4 py-10 text-center text-sm text-ink-muted">No posts yet.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

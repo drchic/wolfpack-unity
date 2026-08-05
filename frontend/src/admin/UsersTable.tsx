@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getUsers, updateUserRole, deleteUser, type UserRecord } from '../api/admin'
+import { Button, Select, Spinner, ErrorMessage } from '../components/ui'
 
 export function UsersTable() {
   const [users, setUsers] = useState<UserRecord[]>([])
@@ -49,57 +50,53 @@ export function UsersTable() {
     }
   }
 
-  if (loading) return <div>Loading users...</div>
+  if (loading) return <Spinner />
 
   return (
     <div>
-      {error && <div style={{ color: 'red', marginBottom: '15px', padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px' }}>{error}</div>}
+      {error && <div className="mb-4"><ErrorMessage message={error} /></div>}
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-        <thead>
-          <tr style={{ borderBottom: '2px solid #ddd' }}>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Name</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Email</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Role</th>
-            <th style={{ textAlign: 'left', padding: '10px' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id} style={{ borderBottom: '1px solid #eee' }}>
-              <td style={{ padding: '10px' }}>{user.name}</td>
-              <td style={{ padding: '10px' }}>{user.email}</td>
-              <td style={{ padding: '10px' }}>
-                <select
-                  value={user.role}
-                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                  disabled={action === user.id}
-                  style={{ padding: '5px' }}
-                >
-                  <option>USER</option>
-                  <option>ADMIN</option>
-                </select>
-              </td>
-              <td style={{ padding: '10px' }}>
-                <button
-                  onClick={() => handleDelete(user.id)}
-                  disabled={action === user.id}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: action === user.id ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  {action === user.id ? 'Deleting...' : 'Delete'}
-                </button>
-              </td>
+      <div className="overflow-x-auto rounded-xl border border-edge">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-edge text-left text-xs uppercase tracking-wide text-ink-muted">
+              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Role</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="border-b border-edge last:border-0 hover:bg-surface-2">
+                <td className="px-4 py-3 text-ink">{user.name}</td>
+                <td className="px-4 py-3 text-ink">{user.email}</td>
+                <td className="px-4 py-3">
+                  <Select
+                    value={user.role}
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    disabled={action === user.id}
+                    className="w-auto"
+                  >
+                    <option>USER</option>
+                    <option>ADMIN</option>
+                  </Select>
+                </td>
+                <td className="px-4 py-3">
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(user.id)}
+                    disabled={action === user.id}
+                    className="px-3 py-1.5 text-xs"
+                  >
+                    {action === user.id ? 'Deleting...' : 'Delete'}
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

@@ -4,50 +4,53 @@ import { UsersTable } from './UsersTable'
 import { ReservationsTable } from './ReservationsTable'
 import { StatsView } from './StatsView'
 import { PostsTable } from './PostsTable'
+import { TopNav } from '../components/TopNav'
+import { Button, PageHeader } from '../components/ui'
+
+const tabs = [
+  { key: 'users', label: 'Users' },
+  { key: 'reservations', label: 'Reservations' },
+  { key: 'stats', label: 'Stats' },
+  { key: 'content', label: 'Content' },
+] as const
 
 export function AdminLayout() {
-  const [activeTab, setActiveTab] = useState('users')
-
-  const tabStyle = (tab: string) => ({
-    padding: '10px 20px',
-    backgroundColor: activeTab === tab ? '#007bff' : '#e9ecef',
-    color: activeTab === tab ? 'white' : 'black',
-    border: 'none',
-    borderRadius: activeTab === tab ? '4px 4px 0 0' : '0',
-    cursor: 'pointer',
-    marginRight: '5px'
-  })
+  const [activeTab, setActiveTab] = useState<typeof tabs[number]['key']>('users')
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto', padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1>Admin Panel</h1>
-        <Link to="/" style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', textDecoration: 'none', borderRadius: '4px' }}>
-          Back to App
-        </Link>
-      </div>
+    <>
+      <TopNav />
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <div className="mb-6 flex items-center justify-between">
+          <PageHeader title="Admin Panel" />
+          <Link to="/">
+            <Button variant="ghost">Back to App</Button>
+          </Link>
+        </div>
 
-      <div style={{ display: 'flex', marginBottom: '20px', borderBottom: '2px solid #ddd' }}>
-        <button onClick={() => setActiveTab('users')} style={tabStyle('users')}>
-          Users
-        </button>
-        <button onClick={() => setActiveTab('reservations')} style={tabStyle('reservations')}>
-          Reservations
-        </button>
-        <button onClick={() => setActiveTab('stats')} style={tabStyle('stats')}>
-          Stats
-        </button>
-        <button onClick={() => setActiveTab('content')} style={tabStyle('content')}>
-          Content
-        </button>
-      </div>
+        <div className="mb-6 flex gap-6 border-b border-edge">
+          {tabs.map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`pb-3 text-sm font-semibold transition-colors ${
+                activeTab === tab.key
+                  ? 'border-b-2 border-accent text-accent'
+                  : 'text-ink-muted hover:text-ink'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      <div style={{ padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '0 4px 4px 4px' }}>
-        {activeTab === 'users' && <UsersTable />}
-        {activeTab === 'reservations' && <ReservationsTable />}
-        {activeTab === 'stats' && <StatsView />}
-        {activeTab === 'content' && <PostsTable />}
+        <div>
+          {activeTab === 'users' && <UsersTable />}
+          {activeTab === 'reservations' && <ReservationsTable />}
+          {activeTab === 'stats' && <StatsView />}
+          {activeTab === 'content' && <PostsTable />}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { PostRequest, PostView } from '../api/posts'
+import { Button, Input, Label, Select, Textarea } from '../components/ui'
 
 interface Props {
   initial?: PostView
@@ -28,60 +29,66 @@ export function PostForm({ initial, onSave, onCancel }: Props) {
     onSave({ type, title, slug: slug || undefined, body: body || undefined, youtubeUrl: youtubeUrl || undefined })
   }
 
-  const fieldStyle = { width: '100%', padding: '8px', marginTop: '4px', boxSizing: 'border-box' as const }
-  const labelStyle = { display: 'block', marginBottom: '12px' }
-
   return (
-    <form onSubmit={handleSubmit}>
-      <label style={labelStyle}>
-        Type
-        <select aria-label="Type" value={type} onChange={e => {
-          const newType = e.target.value as 'NEWS' | 'BLOG' | 'VLOG' | 'ANNOUNCEMENT'
-          setType(newType)
-          if (newType !== 'VLOG') {
-            setYoutubeUrl('')
-          }
-        }} style={fieldStyle}>
+    <form onSubmit={handleSubmit} className="max-w-xl space-y-4">
+      <div>
+        <Label>Type</Label>
+        <Select
+          aria-label="Type"
+          value={type}
+          onChange={e => {
+            const newType = e.target.value as 'NEWS' | 'BLOG' | 'VLOG' | 'ANNOUNCEMENT'
+            setType(newType)
+            if (newType !== 'VLOG') {
+              setYoutubeUrl('')
+            }
+          }}
+        >
           <option value="NEWS">NEWS</option>
           <option value="BLOG">BLOG</option>
           <option value="VLOG">VLOG</option>
           <option value="ANNOUNCEMENT">ANNOUNCEMENT</option>
-        </select>
-      </label>
-      <label style={labelStyle}>
-        Title
-        <input aria-label="Title" value={title} onChange={e => {
-          const newTitle = e.target.value
-          setTitle(newTitle)
-          if (!slugManuallyEdited) {
-            setSlug(deriveSlug(newTitle))
-          }
-        }} required style={fieldStyle} />
-      </label>
-      <label style={labelStyle}>
-        Slug (auto-filled from title, editable)
-        <input aria-label="Slug" value={slug} onChange={e => {
-          setSlugManuallyEdited(true)
-          setSlug(e.target.value)
-        }} style={fieldStyle} />
-      </label>
-      <label style={labelStyle}>
-        Body
-        <textarea aria-label="Body" value={body} onChange={e => setBody(e.target.value)} rows={6} style={fieldStyle} />
-      </label>
+        </Select>
+      </div>
+      <div>
+        <Label>Title</Label>
+        <Input
+          aria-label="Title"
+          value={title}
+          onChange={e => {
+            const newTitle = e.target.value
+            setTitle(newTitle)
+            if (!slugManuallyEdited) {
+              setSlug(deriveSlug(newTitle))
+            }
+          }}
+          required
+        />
+      </div>
+      <div>
+        <Label>Slug (auto-filled from title, editable)</Label>
+        <Input
+          aria-label="Slug"
+          value={slug}
+          onChange={e => {
+            setSlugManuallyEdited(true)
+            setSlug(e.target.value)
+          }}
+        />
+      </div>
+      <div>
+        <Label>Body</Label>
+        <Textarea aria-label="Body" value={body} onChange={e => setBody(e.target.value)} rows={6} />
+      </div>
       {type === 'VLOG' && (
-        <label style={labelStyle}>
-          YouTube URL
-          <input aria-label="YouTube URL" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} style={fieldStyle} />
-        </label>
+        <div>
+          <Label>YouTube URL</Label>
+          <Input aria-label="YouTube URL" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} />
+        </div>
       )}
-      <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-        <button type="submit" style={{ padding: '8px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Save
-        </button>
-        <button type="button" onClick={onCancel} style={{ padding: '8px 20px', cursor: 'pointer' }}>
-          Cancel
-        </button>
+      <div className="flex gap-3 pt-2">
+        <Button type="submit">Save</Button>
+        <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>
       </div>
     </form>
   )
